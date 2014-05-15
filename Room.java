@@ -1,5 +1,11 @@
 package maze;
 
+/*
+ * @author Chris Purta
+ * 
+ * Description: Room class that represented four Doors that are all set to be unlocked
+ * 
+ */
 
 public class Room {
 	
@@ -21,33 +27,6 @@ public class Room {
 		this.rightDoor = new Door(false, right);
 		this.lowerDoor = new Door(false, bottom);
 		this.leftDoor = new Door(false, left);
-	}
-	
-	public Room(int top, int right, int bottom, int left)
-	{
-		//Top door
-		if(top != -1 && top != 0)
-			this.upperDoor = new Door(false, true);
-		else
-			this.upperDoor = new Door(false, false);
-		
-		//Right door
-		if(right != -1 && right != 0)
-			this.rightDoor = new Door(false, true);
-		else
-			this.rightDoor = new Door(false, false);
-		
-		//Bottom door
-		if(bottom != -1 && bottom != 0)
-			this.lowerDoor = new Door(false, true);
-		else
-			this.lowerDoor = new Door(false, false);
-		
-		//Left door
-		if(left != -1 && left != 0)
-			this.leftDoor = new Door(false, true);
-		else
-			this.leftDoor = new Door(false, false);
 	}
 
 	public Door getLeftDoor() {

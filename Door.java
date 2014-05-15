@@ -1,5 +1,18 @@
 package maze;
 
+/*
+ * @author Chris Purta
+ * 
+ * Description: Represent a door to be opened in the maze. Its fields consist of two booleans:
+ * unlocked to tell whether or not the door has been unlocked, and exists to tell whether or not the 
+ * door exists. This could be potentially re-factored to a null-Door pattern by inheritance. Door will
+ * set to be unlocked based upon a question that is attached to an SQLite database.
+ * 
+ * Work that could be done:
+ * 
+ * Potentially re-factor code to the null-door pattern.
+ * 
+ */
 
 public class Door {
 	

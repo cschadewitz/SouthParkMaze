@@ -1,37 +1,39 @@
 package maze;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
-import java.util.List;
 import java.util.Stack;
 /*
- * 	@author: Chris Purta
+ * 	@author Chris Purta
  * 
  * 	Description: This is a Maze class that holds as the underlying structure a 2-d array of
- * 	ints which ensures that there is at least one path to the exit, which is then converted 
- * 	to a 2-d array of rooms with locked doors in the correct place to ensure that 
+ * 	Cells, which contains four walls and then uses a recursive backtracking algorithm that 
+ * 	"knocks down" walls as needed.
+ * 
+ * 	Work that needs to be done: 
+ * 
+ *	1.) Needs to set up Rooms with doors in the proper place.
+ *	2.) Need to set up a display method (look at toString() )
  */
 
 public class Maze
 {
-	private int[][] numMaze;
 	private Cell[][] cellMaze;
-	private Room[][] roomMaze;
 	private int startX, startY, endX, endY;
 	private static final int rows = 10;
 	private static final int cols = 10;
 	
+	//Cell class 
 	private class Cell
 	{
 		private int x, y;
 		private boolean visited, northWall, southWall, eastWall, westWall;
 		
-		public Cell(int i, int j, boolean iM)
+		public Cell(int i, int j, boolean v)
 		{
 			this.x = i;
 			this.y = j;
-			this.visited = iM;
+			this.visited = v;
 			this.northWall = true;
 			this.southWall = true;
 			this.eastWall = true;
@@ -73,7 +75,6 @@ public class Maze
 		
 	}//end Cell class
 	
-	
 	public Maze()
 	{
 		this.startX = 0;
@@ -81,13 +82,16 @@ public class Maze
 		this.endX = rows - 1;
 		this.endY = cols - 1;
 		
-		this.numMaze = new int[rows][cols];
-		primsMazeGenerator();
+		this.cellMaze = new Cell[rows][cols];
+		mazeGenerator();
 	}
 	
-	private void primsMazeGenerator()
+	private void mazeGenerator()
 	{
-		this.cellMaze = new Cell[rows][cols];
+		/*
+		 * Recursive backtracking algorithm found from: http://en.wikipedia.org/wiki/Maze_generation_algorithm
+		 */
+		
 		Cell curCell;
 		int totalCells = rows * cols;
 		int visitedCells = 0;
@@ -95,6 +99,7 @@ public class Maze
 		Random rand = new Random();
 		ArrayList<Cell> visitedNeighbors;
 		
+		//Initialize each cell with the co-orodinates and 
 		for(int i = 0; i < rows; i++)
 			for(int j = 0; j < cols; j++)
 				cellMaze[i][j] = new Cell(i, j, false);
@@ -133,7 +138,7 @@ public class Maze
 			
 		}//end while
 		
-	}//end primsMazeGenerator
+	}//end mazeGenerator
 
 	
 	private void removeWalls(Cell curCell, Cell randCell) {
@@ -191,19 +196,19 @@ public class Maze
 		ArrayList<Cell> neighbors = new ArrayList<Cell>();
 		
 		//Look at top...
-		if(curCell.getX() - 1 >= 0 && cellMaze[curCell.getX() - 1][curCell.getY()].isVisited())
+		if(curCell.getX() - 1 >= 0 && !cellMaze[curCell.getX() - 1][curCell.getY()].isVisited())
 			neighbors.add(cellMaze[curCell.getX() - 1][curCell.getY()]);
 		
 		//Look at bottom...
-		if(curCell.getX() + 1 < rows && cellMaze[curCell.getX() + 1][curCell.getY()].isVisited())
+		if(curCell.getX() + 1 < rows && !cellMaze[curCell.getX() + 1][curCell.getY()].isVisited())
 			neighbors.add(cellMaze[curCell.getX() + 1][curCell.getY()]);
 		
 		//Look at right...
-		if(curCell.getY() + 1 < cols && cellMaze[curCell.getX()][curCell.getY() + 1].isVisited())
+		if(curCell.getY() + 1 < cols && !cellMaze[curCell.getX()][curCell.getY() + 1].isVisited())
 			neighbors.add(cellMaze[curCell.getX()][curCell.getY() + 1]);
 		
 		//Look at right...
-		if(curCell.getY() - 1 >= 0 && cellMaze[curCell.getX()][curCell.getY() - 1].isVisited())
+		if(curCell.getY() - 1 >= 0 && !cellMaze[curCell.getX()][curCell.getY() - 1].isVisited())
 			neighbors.add(cellMaze[curCell.getX()][curCell.getY() - 1]);
 		
 		neighbors.trimToSize();
@@ -213,53 +218,19 @@ public class Maze
 
 	public String toString()
 	{
-		String str = "";
+		/*Need to implement a toString that shows the maze in this fashion:
+		 *
+		 *	+---+---+---+
+		 *	|       |   |
+		 *	+---+   +   +
+		 *	|   |   |   |
+		 *	+   +   +   +
+		 *	|           |
+		 *	+---+---+---+ 
+		 */
 		
-		for(int i = 1; i <= rows; i++)
-		{
-			for(int j = 1; j <= cols; j++)
-				str += this.numMaze[i][j] + " ";
-				
-			str += "\n";
-		}//end for i
-		
-		return str;
+		return null;
 	}//end printMaze
-	
-	private boolean solutionExists(int i, int j)
-	{	
-		if(i <= 0 || j <= 0 || i >= this.numMaze[j].length - 1 || j >= this.numMaze.length - 1) 
-			return false;
-			
-		if(i == this.endX && j == this.endY)
-		{
-			numMaze[i][j] = 7;
-			return true;
-		}
-			
-		if(!isOpen(numMaze[i][j]))
-			return false;
-			
-		this.numMaze[i][j] = 7;
-			
-		if(solutionExists(i, j - 1))//North
-			return true;
-		if(solutionExists(i + 1, j))//East
-			return true;
-		if(solutionExists(i, j + 1))//South
-			return true;
-		if(solutionExists(i - 1, j))//West
-			return true;
-			
-		this.numMaze[i][j] = 3;
-			
-		return false;
-	}//end findSolution
-	
-	private static boolean isOpen(int numMazeVal)
-	{
-		return numMazeVal == 1;
-	}//end isWall
-	
+
 }//end Maze class
 
